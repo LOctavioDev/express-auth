@@ -2,15 +2,27 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
+import userRoutes from './src/routes/userRoutes.js';
 
+// * CONFIGURAMOS EL DOTENV
 dotenv.config();
+
+import connectDB from './src/config/db.js';
+import { notFount, errorHandler } from './src/middleware/errorMiddleware.js';
+
+connectDB();
 
 // * DEFINIMOS EL PUERTO Y HACEMOS UNA INSTANCIA DE EXPRESS
 const port = process.env.PORT || 8000;
 const app = express();
 
 // * MIDDLEWARES BASICOS
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
+app.use('/api/users', userRoutes);
+app.use(notFount);
+app.use(errorHandler);
 
 // * DEFINIMOS UNA RUTA PRICIPAL DE PRUEBA
 app.get('/', (req, res) => {
